@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html>
+  
+  <head>
+    <title>About Rango</title>
+  </head>
+  <body>
+    <h1>About Rango</h1>
+    <div>
+      <strong>{{ author }}</strong><br />
+    </div>
+    <div>
+      <a href="/rango/">Index</a>
+      <img src="{{ MEDIA_URL }}cat.jpg"
+           alt="catpics x" />
+    </div>
+  </body>
+  
+</html>
