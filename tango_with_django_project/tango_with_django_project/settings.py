@@ -73,6 +73,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tango_with_django_project.wsgi.application'
 
+LOGIN_URL = '/rango/login/'
+
 # Media
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
