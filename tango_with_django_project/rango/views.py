@@ -7,6 +7,7 @@ from rango.models import Category, Page
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 
 def index(request):
+    request.session.set_test_cookie()
     # Construct a dictionary to pass to the template engine as its context.
     # Note the key boldmessage is the same as {{ boldmessage }} in the template!
     context_dict = {'boldmessage': "Crunchy, creamy, cookie, candy, cupcake!"}
@@ -26,6 +27,9 @@ def index(request):
 
 
 def about(request):
+    if request.session.test_cookie_worked():
+        print("TEST COOKIE WORKED!")
+        request.session.delete_test_cookie()
     context_dict = {'author': "This tutorial has been put together by Colin Butler"}
     return render(request, 'rango/about.html', context=context_dict)
 
