@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
 from rango.models import Category, Page 
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 
@@ -161,3 +163,41 @@ def register(request):
                   {'user_form': user_form,
                    'profile_form': profile_form,
                    'registered': registered})
+
+
+def user_login(request):
+    # If the request is a HTTP POST, try to pull out the relevant information
+    if request.method == 'POST':
+        # Gather the username and password provided by the user
+        # This information is obtained from the login form
+        # We use request.POST.get('<variable>') as opposed
+        # to request.POST[..] so we get None instead of an error
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # Use django's machinery to attempt to see if the username/password
+        # combination is valid - user object returned if true
+        user = authenticate(username=username, password=password)
+
+        # If we have a User object, the details are correct
+        # If None, no user with matching creds was found
+        if user:
+            #Is the account active? could have been disabled
+            if user.is_active:
+                # Then we can log the user in
+                # We'll send the user back to the homepage
+                login(request, user)
+                return HttpResponseRedirect(reverse('index'))
+            else:
+                # An inactive account was used
+                return HttpResponse('Your Rango account is disabled.')
+        else:
+            # Bad login details were provided
+            print("Invalid login details: {0}, {1}".format(username, password))
+            return HttpResponse("Invalid login details supplied")
+
+    # The request is not a HTTP POST, so display the login form
+    # This scenario would most likely be HTTP GET
+    else:
+        # No context variables to pass to the template system (blank dict)
+        return render(request, 'rango/login.html', {})
